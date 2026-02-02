@@ -22,7 +22,23 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        //return response()->json($request->all());
+        try {
+            $customer = new Customer();
+            $customer->name = $request->customer['name'];
+            $customer->email = $request->customer['email'];
+            $customer->phone = $request->customer['phone'];
+            $customer->address = $request->customer['address'];
+            // $customer->gender = $request->customer['gender'];
+            // $customer->dob = $request->customer['dob'];
+            // $customer->photo = $request->customer['photo'];
+
+            $customer->save();
+            return response()->json(['message' => 'Customer created successfully', 'customer' => $customer], 201);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to create customer', 'error' => $th->getMessage()], 500);
+        }
     }
 
     /**
@@ -46,6 +62,8 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $customer = Customer::find($id);
+        $customer->delete();
+        return response()->json(['success' => 'Customer deleted successfully'], 200);
     }
 }
